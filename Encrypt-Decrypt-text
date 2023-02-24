@@ -1,0 +1,68 @@
+Ansible Vault:
+
+  Vault Commands:
+    Create a new encrypted file:
+      [ansible@controller base]$ ansible-vault create --vault-id @prompt secret.yml
+      New vault password (default):
+      Confirm new vault password (default):
+                        OR
+      ansible-vault create --vault-password-file <path of file containing password> foo.yml
+   
+    Edit an existing encrypted file:
+      [ansible@controller base]$ ansible-vault edit --vault-id @prompt secret.yml
+      New vault password (default):
+      Confirm new vault password (default):
+                        OR
+      ansible-vault edit --vault-password-file <path of file containing password> foo.yml
+    
+   View the contents of an encrypted file:
+      [ansible@controller base]$ ansible-vault view --vault-id @prompt secret.yml
+      New vault password (default):
+      Confirm new vault password (default):
+                        OR
+      ansible-vault view —vault-password-file <path of file containing password> foo.yml
+    
+    Decrypt the contents of an encrypted file on disk:
+      ansible-vault  --vault-password-file <path of file containing password> decrypt foo.yml 
+      (Ex: ansible-vault  --vault-password-file  decrypt  /data/private/creds foo.yml )
+
+    Encrypt the contens of a file on disk:
+      ansible-vault encrypt --vault-password-file /data/private/creds foo.yml 
+                         OR
+      ansible-vault encrypt foo.yml
+
+  Encrypted Var in a YAML file:
+    mysecret: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              66386439653236336462626566653063336164663966303231363934653561363964363833313662
+              6431626536303530376336343832656537303632313433360a626438346336353331386135323734
+              62656361653630373231613662633962316233633936396165386439616533353965373339616234
+              3430613539666330390a313736323265656432366236633330313963326365653937323833366536
+              34623731376664623134383463316265643436343438623266623965636363326136
+
+  Decrypt individual variable:
+    AWX1 [environments] VS='$ANSIBLE_VAULT;1.1;AES256
+      > 65663361633837333637393732623735623438353833656164343531366537366433373234393135
+      > 3966306230313666373436653339393634353964316433320a313566336161346664666361666233
+      > 32343039396634303935646462623436626664343233616439313339333233336339666563316230
+      > 3936383262333961630a626663333037646337363735306330356331383530383566356465393630
+      > 6364'
+    echo "$VS" | ansible-vault decrypt --vault-password-file /data/private/client-vault-creds
+      Decryption successful
+
+  Commands:
+    Command to encrypt a specific string:
+      ansible-vault encrypt_string --vault-password-file /data/private/creds 'xxxx_private_content_xxxx' --name 'xxxx_var_name_xxxx'
+
+    Decrypt a string:
+      VS='$ANSIBLE_VAULT;1.1;AES256
+      65663361633837333637393732623735623438353833656164343531366537366433373234393135
+      3966306230313666373436653339393634353964316433320a313566336161346664666361666233
+      32343039396634303935646462623436626664343233616439313339333233336339666563316230
+      3936383262333961630a626663333037646337363735306330356331383530383566356465393630
+      6364'
+      echo "$VS" | ansible-vault decrypt --vault-password-file /data/private/client-vault-creds
+
+   
+    Command line parameter to pass to ansible-playbook to enable it to decrypt vault contents:
+      --vault-password-file /data/private/client-vault-creds
