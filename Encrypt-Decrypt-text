@@ -43,6 +43,21 @@ Ansible Vault:
       6364'
       echo "$VS" | ansible-vault decrypt --vault-password-file /data/private/client-vault-creds    
 
+                                         OR
+      create one shell script file and execute it.
+      Example:
+      #!/bin/bash
+      
+      VS='$ANSIBLE_VAULT;1.1;AES256
+      65663361633837333637393732623734433433562343835383365616434353136653736644393135
+      3966306230313666373436653339393634353964316433320a313566343433361613466646666233
+      32343039396634303935646462623436626664343233616313339333233336339666343563316230
+      3936383262333961630a626663333037646337363735306330356331383530383566356465393630
+      6364'    
+      echo "$VS" | ansible-vault decrypt --vault-password-file /data/private/client-vault-creds  
+      
+ 
+      
   Encrypted Var in a YAML file:
     mysecret: !vault |
               $ANSIBLE_VAULT;1.1;AES256
